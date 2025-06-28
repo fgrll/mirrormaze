@@ -1,15 +1,23 @@
 package controls_demo;
 
+import MazeGenerator.MazeGenerator;
+
 public class GameModel {
+    private final boolean[][] walls;
     private final int cols, rows;
     private int playerX, playerY;
 
-    public GameModel(int cols, int rows) {
-        this.cols = cols;
-        this.rows = rows;
-        // debug 
-        this.playerX = cols / 2;
-        this.playerY = rows / 2;
+    public GameModel(int cols, int rows, MazeGenerator gen) {
+        this.walls = gen.generate(cols, rows);
+        this.cols = walls.length;
+        this.rows = walls[0].length;
+
+        this.playerX = 1;
+        this.playerY = 1;
+    }
+
+    public boolean isWall(int x, int y) {
+        return walls[x][y];
     }
 
     public int getCols() { return cols; }
