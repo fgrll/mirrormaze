@@ -2,13 +2,17 @@ package controls_demo;
 
 import javax.swing.*;
 
+import MazeGenerator.DFSMazeGenerator;
+import MazeGenerator.MazeGenerator;
+
 public class GridDemo {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            GameModel model = new GameModel(10, 10);
+            MazeGenerator gen = new DFSMazeGenerator();
+            GameModel model = new GameModel(10, 8, gen);
             GridPanel panel = new GridPanel(model);
 
-            JFrame frame = new JFrame("Grid Demo");
+            JFrame frame = new JFrame("Maze Demo (no collision)");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(panel);
             frame.pack(); 
