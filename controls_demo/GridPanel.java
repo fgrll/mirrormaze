@@ -43,27 +43,30 @@ public class GridPanel extends JPanel {
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
-        im.put(KeyStroke.getKeyStroke("UP"), "moveUp");
-        im.put(KeyStroke.getKeyStroke("DOWN"), "moveDown");
-        im.put(KeyStroke.getKeyStroke("LEFT"), "moveLeft");
-        im.put(KeyStroke.getKeyStroke("RIGHT"), "moveRight");
+        im.put(KeyStroke.getKeyStroke("UP"), "up");
+        im.put(KeyStroke.getKeyStroke("DOWN"), "down");
+        im.put(KeyStroke.getKeyStroke("LEFT"), "left");
+        im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
 
-        am.put("moveUp", new MoveAction(() -> model.moveNorth()));
-        am.put("moveDown", new MoveAction(() -> model.moveSouth()));
-        am.put("moveLeft", new MoveAction(() -> model.moveWest()));
-        am.put("moveRight", new MoveAction(() -> model.moveEast()));
+        am.put("up", new MoveAction(Direction.NORTH));
+        am.put("down", new MoveAction(Direction.SOUTH));
+        am.put("left", new MoveAction(Direction.WEST));
+        am.put("right", new MoveAction(Direction.EAST));
     }
 
     private class MoveAction extends AbstractAction {
-        private final Runnable move;
+        private final Direction dir;
 
-        public MoveAction(Runnable move) {
-            this.move = move;
+        public MoveAction(Direction dir) {
+            this.dir = dir;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            move.run();
+            boolean moved = model.tryMove(dir);
+            if (!moved) {
+                Toolkit.getDefaultToolkit().beep();
+            }
             repaint();
         }
     }
