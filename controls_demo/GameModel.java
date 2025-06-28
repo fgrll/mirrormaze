@@ -12,7 +12,7 @@ public class GameModel {
         this.cols = walls.length;
         this.rows = walls[0].length;
 
-        this.playerX = 1;
+        this.playerX = 0;
         this.playerY = 1;
     }
 
