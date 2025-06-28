@@ -6,13 +6,11 @@ import java.awt.event.ActionEvent;
 
 public class GridPanel extends JPanel {
     private final GameModel model;
-    private final int cellSize = 40;
+    private final int cellSize = 20;
 
     public GridPanel(GameModel model) {
         this.model = model;
-        int width = model.getCols() * cellSize;
-        int height = model.getRows() * cellSize;
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
         setFocusable(true);
         requestFocusInWindow();
         setupKeyBindings();
@@ -21,13 +19,17 @@ public class GridPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.LIGHT_GRAY);
 
-        for (int x = 0; x <= model.getCols(); x++) {
-            g.drawLine(x * cellSize, 0, x * cellSize, model.getRows() * cellSize);
-        }
-        for (int y = 0; y <= model.getRows(); y++) {
-            g.drawLine(0, y * cellSize, model.getCols() * cellSize, y * cellSize);
+        for (int x = 0; x < model.getCols(); x++) {
+            for (int y = 0; y < model.getRows(); y++) {
+                if (model.isWall(x, y)) {
+                    g.setColor(Color.DARK_GRAY);
+                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                } else {
+                    g.setColor(Color.WHITE);
+                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                }
+            }
         }
 
         // demo
