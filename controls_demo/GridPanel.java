@@ -9,7 +9,7 @@ public class GridPanel extends JPanel {
     private final GameModel model;
     private final int cellSize = 20;
     
-    private final SoundPlayer sounds = new SoundPlayer();
+    private final SoundPlayer sounds;
 
     private Direction lastDir = Direction.EAST;
 
@@ -17,8 +17,9 @@ public class GridPanel extends JPanel {
     private final int flashDuration = 200;
     private Timer flashTimer;
 
-    public GridPanel(GameModel model) {
+    public GridPanel(GameModel model, SoundPlayer sounds) {
         this.model = model;
+        this.sounds = sounds;
         setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
         setFocusable(true);
         requestFocusInWindow();

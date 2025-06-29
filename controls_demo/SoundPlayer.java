@@ -6,10 +6,12 @@ import java.net.URL;
 public class SoundPlayer {
     private Clip hitClip;
     private Clip successClip;
+    private Clip themeClip;
 
     public SoundPlayer() {
         hitClip = loadClip("../resources/mirrormaze_hit.wav");
         successClip = loadClip("../resources/mirrormaze_success.wav");
+        themeClip = loadClip("../resources/mirrormaze_theme.wav");
     }
 
     private Clip loadClip(String resourcePath) {
@@ -22,6 +24,26 @@ public class SoundPlayer {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void playThemeLoop() {
+        if (themeClip == null) return;
+        if (themeClip.isRunning()) return;
+        themeClip.setFramePosition(0);
+        themeClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    public void setThemeVolume(float volume) {
+        if (themeClip == null) return;
+        FloatControl gain = (FloatControl) themeClip.getControl(FloatControl.Type.MASTER_GAIN);
+        float dB = (float)(20.0 * Math.log10(Math.max(volume, 0.0001)));
+        gain.setValue(dB);
+    }
+
+    public void stopTheme() {
+        if (themeClip != null && themeClip.isRunning()) {
+            themeClip.stop();
         }
     }
 

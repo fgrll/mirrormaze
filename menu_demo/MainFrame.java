@@ -1,6 +1,9 @@
 package menu_demo;
 
 import javax.swing.*;
+
+import controls_demo.SoundPlayer;
+
 import java.awt.*;
 
 public class MainFrame extends JFrame {
@@ -8,12 +11,11 @@ public class MainFrame extends JFrame {
     private final CardLayout cardLayout;
     private final GameController controller;
 
-    public MainFrame() {
+    public MainFrame(SoundPlayer sounds) {
         super("Mirror Maze");
-
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
-        controller = new GameController(cardLayout, cards);
+        controller = new GameController(cardLayout, cards, sounds);
 
         initCards();
 
@@ -34,8 +36,11 @@ public class MainFrame extends JFrame {
         cardLayout.show(cards, "MENU");
     }
     public static void main(String[] args) {
+        SoundPlayer sounds = new SoundPlayer();
+        sounds.setThemeVolume(0.2f);
+        sounds.playThemeLoop();
         SwingUtilities.invokeLater(() -> {
-            new MainFrame().setVisible(true);
+            new MainFrame(sounds).setVisible(true);
         });
     }
 }
