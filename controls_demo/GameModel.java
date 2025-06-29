@@ -45,6 +45,11 @@ public class GameModel {
         return true;
     }
 
+    public void resetPosition() {
+        playerX = 0;
+        playerY = 1;
+    }
+
     public boolean isFinished() {
         return playerX == exitX && playerY == exitY;
     }

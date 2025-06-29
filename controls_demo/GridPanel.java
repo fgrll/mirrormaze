@@ -104,11 +104,13 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("DOWN"), "down");
         im.put(KeyStroke.getKeyStroke("LEFT"), "left");
         im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
+        im.put(KeyStroke.getKeyStroke("R"), "reset");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
         am.put("left", new MoveAction(Direction.WEST));
         am.put("right", new MoveAction(Direction.EAST));
+        am.put("reset", new ResetAction());
     }
 
     private class MoveAction extends AbstractAction {
@@ -136,6 +138,18 @@ public class GridPanel extends JPanel {
                 }
             }
             repaint();
+        }
+    }
+
+    private class ResetAction extends AbstractAction {
+        public ResetAction() {
+            model.resetPosition();
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            lastDir = Direction.EAST;
+            repaint();
+            model.resetPosition();
         }
     }
 }
