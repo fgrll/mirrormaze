@@ -3,11 +3,19 @@ package controls_demo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 
 public class GridPanel extends JPanel {
     private final GameModel model;
     private final int cellSize = 20;
+    
     private final SoundPlayer sounds = new SoundPlayer();
+
+    private Direction lastDir = Direction.EAST;
+
+    private int flashX = -1, flashY = -1;
+    private final int flashDuration = 200;
+    private Timer flashTimer;
 
     public GridPanel(GameModel model) {
         this.model = model;
@@ -18,32 +26,74 @@ public class GridPanel extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    protected void paintComponent(Graphics g0) {
+        super.paintComponent(g0);
+        Graphics2D g = (Graphics2D) g0.create();
 
         for (int x = 0; x < model.getCols(); x++) {
             for (int y = 0; y < model.getRows(); y++) {
+                int px = x*cellSize, py = y*cellSize;
                 if (model.isWall(x, y)) {
-                    g.setColor(Color.DARK_GRAY);
-                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    if (x == flashX && y == flashY) {
+                        g.setColor(Color.RED);
+                    } else {
+                        g.setColor(Color.DARK_GRAY);
+                    }
+                    g.fillRect(px, py, cellSize, cellSize);
                 } else if (x == 0 && y == 1) {
                     g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    g.fillRect(px, py, cellSize, cellSize);
                 } else if ((x == model.getCols() - 1) && (y == model.getRows() - 2)) {
                     g.setColor(Color.GREEN);
-                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    g.fillRect(px, py, cellSize, cellSize);
                 } else {
                     g.setColor(Color.WHITE);
-                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    g.fillRect(px, py, cellSize, cellSize);
                 }
             }
         }
 
-        // demo
+        int cx = model.getPlayerX()*cellSize;
+        int cy = model.getPlayerY()*cellSize;
+        Shape arrow = createArrowShape(cellSize);
+        AffineTransform at = new AffineTransform();
+        at.translate(cx + cellSize/2, cy + cellSize/2);
+        double angle = 0;
+        switch (lastDir) {
+            case NORTH: angle = 0; break;
+            case EAST: angle = Math.PI/2; break;
+            case SOUTH: angle = Math.PI; break;
+            case WEST: angle = -Math.PI/2; break;
+        }
+        at.rotate(angle);
         g.setColor(Color.RED);
-        int px = model.getPlayerX() * cellSize;
-        int py = model.getPlayerY() * cellSize;
-        g.fillOval(px + 4, py + 4, cellSize - 8, cellSize - 8);
+        g.fill(at.createTransformedShape(arrow));
+        g.dispose();
+    }
+
+    private Shape createArrowShape(int size) {
+        int h = size/2;
+        Polygon p = new Polygon();
+        p.addPoint(0, -h/2);
+        p.addPoint(-h/2, h/2);
+        p.addPoint(h/2, h/2);
+        return p;
+    }
+
+    private void flashWall(int x, int y) {
+        flashX = x;
+        flashY = y;
+        if (flashTimer != null && flashTimer.isRunning()) {
+            flashTimer.restart();
+        } else {
+            flashTimer = new Timer(flashDuration, (ActionEvent e) -> {
+                flashX = flashY = -1;
+                repaint();
+                flashTimer.stop();
+            });
+            flashTimer.setRepeats(false);
+            flashTimer.start();
+        }
     }
 
     private void setupKeyBindings() {
@@ -70,9 +120,16 @@ public class GridPanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            lastDir = dir;
+
+            int nx = model.getPlayerX() + dir.dx;
+            int ny = model.getPlayerY() + dir.dy;
             boolean moved = model.tryMove(dir);
             if (!moved) {
                 sounds.playHit();
+                if (nx >= 0 && nx < model.getCols() && ny >= 0 && ny < model.getRows()) {
+                    flashWall(nx, ny);
+                }
             } else {
                 if (model.isFinished()) {
                     sounds.playSuccess();
