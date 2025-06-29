@@ -26,6 +26,12 @@ public class GridPanel extends JPanel {
                 if (model.isWall(x, y)) {
                     g.setColor(Color.DARK_GRAY);
                     g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                } else if (x == 0 && y == 1) {
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                } else if ((x == model.getCols() - 1) && (y == model.getRows() - 2)) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
                 } else {
                     g.setColor(Color.WHITE);
                     g.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
