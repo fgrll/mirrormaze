@@ -73,6 +73,10 @@ public class GridPanel extends JPanel {
             boolean moved = model.tryMove(dir);
             if (!moved) {
                 sounds.playHit();
+            } else {
+                if (model.isFinished()) {
+                    sounds.playSuccess();
+                }
             }
             repaint();
         }

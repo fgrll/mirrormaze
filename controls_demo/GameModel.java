@@ -4,6 +4,7 @@ public class GameModel {
     private final boolean[][] walls;
     private final int cols, rows;
     private int playerX, playerY;
+    private int exitX, exitY;
 
     public GameModel(int cols, int rows, boolean[][] walls) {
         this.walls = walls;
@@ -12,6 +13,9 @@ public class GameModel {
 
         this.playerX = 0;
         this.playerY = 1;
+
+        this.exitX = 2*cols;
+        this.exitY = 2*rows-1;
     }
 
     public boolean isWall(int x, int y) {
@@ -39,5 +43,9 @@ public class GameModel {
         playerX = nx; 
         playerY = ny;
         return true;
+    }
+
+    public boolean isFinished() {
+        return playerX == exitX && playerY == exitY;
     }
 }
