@@ -7,8 +7,8 @@ public class GameModel {
 
     public GameModel(int cols, int rows, boolean[][] walls) {
         this.walls = walls;
-        this.cols = cols;
-        this.rows = rows;
+        this.cols = 2*cols+1;
+        this.rows = 2*rows+1;
 
         this.playerX = 0;
         this.playerY = 1;
