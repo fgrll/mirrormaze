@@ -1,20 +1,27 @@
 package controls_demo;
 
 import javax.sound.sampled.*;
-import java.io.IOException;
 import java.net.URL;
 
 public class SoundPlayer {
     private Clip hitClip;
+    private Clip successClip;
 
     public SoundPlayer() {
+        hitClip = loadClip("../resources/mirrormaze_hit.wav");
+        successClip = loadClip("../resources/mirrormaze_success.wav");
+    }
+
+    private Clip loadClip(String resourcePath) {
         try {
-            URL url = getClass().getResource("../resources/mirrormaze_hit.wav");
+            URL url = getClass().getResource(resourcePath);
             AudioInputStream ais = AudioSystem.getAudioInputStream(url);
-            hitClip = AudioSystem.getClip();
-            hitClip.open(ais);
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            return clip;
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -25,5 +32,12 @@ public class SoundPlayer {
             hitClip.stop();
         hitClip.setFramePosition(0);
         hitClip.start();
+    }
+
+    public void playSuccess() {
+        if (successClip == null) return;
+        if (successClip.isRunning()) successClip.stop();
+        successClip.setFramePosition(0);
+        successClip.start();
     }
 }
