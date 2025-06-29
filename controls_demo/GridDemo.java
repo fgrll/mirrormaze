@@ -1,7 +1,6 @@
 package controls_demo;
 
 import javax.swing.*;
-
 import MazeGenerator.DFSMazeGenerator;
 import MazeGenerator.MazeGenerator;
 
