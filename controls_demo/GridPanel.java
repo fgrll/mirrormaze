@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 public class GridPanel extends JPanel {
     private final GameModel model;
     private final int cellSize = 20;
+    private final SoundPlayer sounds = new SoundPlayer();
 
     public GridPanel(GameModel model) {
         this.model = model;
@@ -65,7 +66,7 @@ public class GridPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             boolean moved = model.tryMove(dir);
             if (!moved) {
-                Toolkit.getDefaultToolkit().beep();
+                sounds.playHit();
             }
             repaint();
         }
