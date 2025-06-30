@@ -168,4 +168,10 @@ public class GridPanel extends JPanel {
             onEscape.run();
         }
     }
+
+    public void cleanup() {
+        if (flashTimer != null && flashTimer.isRunning()) {
+            flashTimer.stop();
+        }
+    }
 }

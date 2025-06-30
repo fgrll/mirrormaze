@@ -13,6 +13,7 @@ public class GameController {
     private final CardLayout cardLayout;
     private final JPanel cards;
     private SoundPlayer sounds;
+    private GridPanel currentGridPanel;
 
     public GameController(CardLayout cardLayout, JPanel cards, SoundPlayer sounds) {
         this.sounds = sounds;
@@ -21,17 +22,26 @@ public class GameController {
     }
 
     public void showSetup() {
+        if (currentGridPanel != null) {
+            cards.remove(currentGridPanel);
+            currentGridPanel.cleanup();
+            currentGridPanel = null;
+        }
         cardLayout.show(cards, "SETUP");
     }
 
     public void startGame(int cols, int rows) {
+        if (currentGridPanel != null) {
+            cards.remove(currentGridPanel);
+            currentGridPanel.cleanup();
+        }
+
         MazeGenerator gen = new DFSMazeGenerator();
         boolean[][] walls = gen.generate(cols, rows);
         GameModel model = new GameModel(cols, rows, walls);
-        GridPanel gamePanel = new GridPanel(model, sounds, this::showSetup);
-        cards.add(gamePanel, "GAME");
-        // cardLayout.show(cards, "GAME");
-        gamePanel.requestFocusInWindow();
+        currentGridPanel = new GridPanel(model, sounds, this::showSetup);
+        cards.add(currentGridPanel, "GAME");
+        currentGridPanel.requestFocusInWindow();
     }
 
     public void showMenu() {
