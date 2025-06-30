@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
         cards.add(menu, "MENU");
 
 
-        SetupPanel setup = new SetupPanel(controller::startGame);
+        SetupPanel setup = new SetupPanel(controller::startGame, controller::showMenu);
         cards.add(setup, "SETUP");
         
         cardLayout.show(cards, "MENU");

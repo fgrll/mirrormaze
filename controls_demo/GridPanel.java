@@ -17,9 +17,12 @@ public class GridPanel extends JPanel {
     private final int flashDuration = 200;
     private Timer flashTimer;
 
-    public GridPanel(GameModel model, SoundPlayer sounds) {
+    private Runnable onEscape;
+
+    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape) {
         this.model = model;
         this.sounds = sounds;
+        this.onEscape = onEscape;
         setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
         setFocusable(true);
         requestFocusInWindow();
@@ -106,12 +109,14 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("LEFT"), "left");
         im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
         im.put(KeyStroke.getKeyStroke("R"), "reset");
+        im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
         am.put("left", new MoveAction(Direction.WEST));
         am.put("right", new MoveAction(Direction.EAST));
         am.put("reset", new ResetAction());
+        am.put("exit", new ExitAction());
     }
 
     private class MoveAction extends AbstractAction {
@@ -154,6 +159,13 @@ public class GridPanel extends JPanel {
             lastDir = Direction.EAST;
             repaint();
             model.resetPosition();
+        }
+    }
+
+    private class ExitAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onEscape.run();
         }
     }
 }

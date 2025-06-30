@@ -28,9 +28,13 @@ public class GameController {
         MazeGenerator gen = new DFSMazeGenerator();
         boolean[][] walls = gen.generate(cols, rows);
         GameModel model = new GameModel(cols, rows, walls);
-        GridPanel gamePanel = new GridPanel(model, sounds);
+        GridPanel gamePanel = new GridPanel(model, sounds, this::showSetup);
         cards.add(gamePanel, "GAME");
         cardLayout.show(cards, "GAME");
         gamePanel.requestFocusInWindow();
+    }
+
+    public void showMenu() {
+        cardLayout.show(cards, "MENU");
     }
 }
