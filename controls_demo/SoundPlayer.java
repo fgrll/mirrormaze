@@ -7,11 +7,15 @@ public class SoundPlayer {
     private Clip hitClip;
     private Clip successClip;
     private Clip themeClip;
+    private Clip moveClip;
+
+    private String wavPath = "../resources/";
 
     public SoundPlayer() {
-        hitClip = loadClip("../resources/mirrormaze_hit.wav");
-        successClip = loadClip("../resources/mirrormaze_success.wav");
-        themeClip = loadClip("../resources/mirrormaze_theme.wav");
+        hitClip = loadClip(wavPath + "mirrormaze_hit.wav");
+        successClip = loadClip(wavPath + "mirrormaze_success.wav");
+        themeClip = loadClip(wavPath + "mirrormaze_theme.wav");
+        moveClip = loadClip(wavPath + "mirrormaze_move.wav");
     }
 
     private Clip loadClip(String resourcePath) {
@@ -54,6 +58,20 @@ public class SoundPlayer {
             hitClip.stop();
         hitClip.setFramePosition(0);
         hitClip.start();
+    }
+
+    public void playMove() {
+        if (moveClip == null) return;
+        if (moveClip.isRunning()) moveClip.stop();
+        moveClip.setFramePosition(0);
+        moveClip.start();
+    }
+
+    public void setMoveVolume(float volume) {
+        if (moveClip == null) return;
+        FloatControl gain = (FloatControl) moveClip.getControl(FloatControl.Type.MASTER_GAIN);
+        float dB = (float)(20.0 * Math.log10(Math.max(volume, 0.0001)));
+        gain.setValue(dB);
     }
 
     public void playSuccess() {
