@@ -156,6 +156,7 @@ public class GridPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             lastDir = Direction.EAST;
+            sounds.playDeath();
             repaint();
             model.resetPosition();
         }

@@ -8,6 +8,7 @@ public class SoundPlayer {
     private Clip successClip;
     private Clip themeClip;
     private Clip moveClip;
+    private Clip deathClip;
 
     private String wavPath = "../resources/";
 
@@ -16,6 +17,7 @@ public class SoundPlayer {
         successClip = loadClip(wavPath + "mirrormaze_success.wav");
         themeClip = loadClip(wavPath + "mirrormaze_theme.wav");
         moveClip = loadClip(wavPath + "mirrormaze_move.wav");
+        deathClip = loadClip(wavPath + "mirrormaze_death.wav");
     }
 
     private Clip loadClip(String resourcePath) {
@@ -67,6 +69,13 @@ public class SoundPlayer {
         moveClip.start();
     }
 
+    public void playDeath() {
+        if (deathClip == null) return;
+        if (deathClip.isRunning()) deathClip.stop();
+        deathClip.setFramePosition(0);
+        deathClip.start();
+    }
+
     public void setSFXVolume(float volume) {
         if (moveClip == null) return;
         float dB = (float)(20.0 * Math.log10(Math.max(volume, 0.0001)));
@@ -79,6 +88,9 @@ public class SoundPlayer {
 
         FloatControl successGain = (FloatControl) successClip.getControl(FloatControl.Type.MASTER_GAIN);
         successGain.setValue(dB);
+
+        FloatControl deathGain = (FloatControl) deathClip.getControl(FloatControl.Type.MASTER_GAIN);
+        deathGain.setValue(dB);
     }
 
     public void playSuccess() {
