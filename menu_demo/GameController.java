@@ -47,4 +47,8 @@ public class GameController {
     public void showMenu() {
         cardLayout.show(cards, "MENU");
     }
+
+    public void showSettings() {
+        cardLayout.show(cards, "SETTINGS");
+    }
 }
