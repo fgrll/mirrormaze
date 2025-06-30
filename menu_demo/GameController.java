@@ -30,7 +30,7 @@ public class GameController {
         GameModel model = new GameModel(cols, rows, walls);
         GridPanel gamePanel = new GridPanel(model, sounds, this::showSetup);
         cards.add(gamePanel, "GAME");
-        cardLayout.show(cards, "GAME");
+        // cardLayout.show(cards, "GAME");
         gamePanel.requestFocusInWindow();
     }
 

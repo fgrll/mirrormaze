@@ -30,10 +30,16 @@ public class MainFrame extends JFrame {
         cards.add(menu, "MENU");
 
 
-        SetupPanel setup = new SetupPanel(controller::startGame, controller::showMenu);
+        SetupPanel setup = new SetupPanel(this::startGame, controller::showMenu);
         cards.add(setup, "SETUP");
         
         cardLayout.show(cards, "MENU");
+    }
+
+    private void startGame(int cols, int rows) {
+        controller.startGame(cols, rows);
+        pack();
+        cardLayout.show(cards, "GAME");
     }
     public static void main(String[] args) {
         SoundPlayer sounds = new SoundPlayer();
