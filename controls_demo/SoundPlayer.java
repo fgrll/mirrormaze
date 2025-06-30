@@ -67,11 +67,18 @@ public class SoundPlayer {
         moveClip.start();
     }
 
-    public void setMoveVolume(float volume) {
+    public void setSFXVolume(float volume) {
         if (moveClip == null) return;
-        FloatControl gain = (FloatControl) moveClip.getControl(FloatControl.Type.MASTER_GAIN);
         float dB = (float)(20.0 * Math.log10(Math.max(volume, 0.0001)));
-        gain.setValue(dB);
+
+        FloatControl moveGain = (FloatControl) moveClip.getControl(FloatControl.Type.MASTER_GAIN);
+        moveGain.setValue(dB);
+
+        FloatControl hitGain = (FloatControl) hitClip.getControl(FloatControl.Type.MASTER_GAIN);
+        hitGain.setValue(dB);
+
+        FloatControl successGain = (FloatControl) successClip.getControl(FloatControl.Type.MASTER_GAIN);
+        successGain.setValue(dB);
     }
 
     public void playSuccess() {
