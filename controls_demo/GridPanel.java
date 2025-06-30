@@ -142,7 +142,6 @@ public class GridPanel extends JPanel {
                 if (model.isFinished()) {
                     sounds.playSuccess();
                 } else {
-                    sounds.setMoveVolume(0.5f);
                     sounds.playMove();
                 }
             }
