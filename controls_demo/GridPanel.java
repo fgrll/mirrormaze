@@ -17,7 +17,7 @@ public class GridPanel extends JPanel {
     private final int flashDuration = 200;
     private Timer flashTimer;
 
-    private Runnable onEscape;
+    private final Runnable onEscape;
 
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape) {
         this.model = model;
