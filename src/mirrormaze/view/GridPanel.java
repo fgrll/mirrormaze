@@ -1,4 +1,4 @@
-package controls_demo;
+package mirrormaze.view;
 
 import javax.swing.*;
 import java.awt.*;

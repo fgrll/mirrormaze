@@ -1,4 +1,4 @@
-package controls_demo;
+package mirrormaze.util;
 
 import javax.sound.sampled.*;
 import java.net.URL;

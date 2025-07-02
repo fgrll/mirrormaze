@@ -1,4 +1,4 @@
-package menu_demo;
+package mirrormaze.view;
 
 import javax.swing.*;
 

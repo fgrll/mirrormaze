@@ -1,4 +1,4 @@
-package settings_test;
+package mirrormaze.view;
 
 import javax.swing.*;
 import controls_demo.SoundPlayer;

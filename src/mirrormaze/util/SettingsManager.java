@@ -1,4 +1,4 @@
-package settings_test;
+package mirrormaze.util;
 
 import java.nio.file.*;
 import java.io.*;

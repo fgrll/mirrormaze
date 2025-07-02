@@ -1,4 +1,4 @@
-package MazeGenerator;
+package mirrormaze.generator;
 
 import java.util.*;
 

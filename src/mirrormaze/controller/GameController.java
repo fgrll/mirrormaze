@@ -1,4 +1,4 @@
-package menu_demo;
+package mirrormaze.controller;
 
 import java.awt.*;
 import javax.swing.*;
