@@ -19,10 +19,13 @@ public class GridPanel extends JPanel {
 
     private final Runnable onEscape;
 
-    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape) {
+    private final Runnable onGenerate;
+
+    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
+        this.onGenerate = onGenerate;
         setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
         setFocusable(true);
         requestFocusInWindow();
@@ -110,6 +113,7 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
         im.put(KeyStroke.getKeyStroke("R"), "reset");
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
+        im.put(KeyStroke.getKeyStroke("G"), "generate");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
@@ -117,6 +121,7 @@ public class GridPanel extends JPanel {
         am.put("right", new MoveAction(Direction.EAST));
         am.put("reset", new ResetAction());
         am.put("exit", new ExitAction());
+        am.put("generate", new GenerateAction());
     }
 
     private class MoveAction extends AbstractAction {
@@ -166,6 +171,13 @@ public class GridPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             onEscape.run();
+        }
+    }
+
+    private class GenerateAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onGenerate.run();
         }
     }
 

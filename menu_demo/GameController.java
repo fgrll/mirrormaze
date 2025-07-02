@@ -15,6 +15,9 @@ public class GameController {
     private SoundPlayer sounds;
     private GridPanel currentGridPanel;
 
+    private int currentCols, currentRows;
+    private MazeGenerator generator;
+
     public GameController(CardLayout cardLayout, JPanel cards, SoundPlayer sounds) {
         this.sounds = sounds;
         this.cardLayout = cardLayout;
@@ -31,16 +34,26 @@ public class GameController {
     }
 
     public void startGame(int cols, int rows) {
+        this.currentCols = cols;
+        this.currentRows = rows;
+        this.generator = new DFSMazeGenerator(); // debug
+
+        generateGame();
+    }
+
+    public void generateGame() {
+        boolean[][] walls = generator.generate(currentCols, currentRows);
+        GameModel model = new GameModel(currentCols, currentRows, walls);
+
         if (currentGridPanel != null) {
             cards.remove(currentGridPanel);
             currentGridPanel.cleanup();
         }
 
-        MazeGenerator gen = new DFSMazeGenerator();
-        boolean[][] walls = gen.generate(cols, rows);
-        GameModel model = new GameModel(cols, rows, walls);
-        currentGridPanel = new GridPanel(model, sounds, this::showSetup);
+        currentGridPanel = new GridPanel(model, sounds, this::showSetup, this::generateGame);
         cards.add(currentGridPanel, "GAME");
+        cardLayout.show(cards, "GAME");
+        SwingUtilities.getWindowAncestor(cards).pack();
         currentGridPanel.requestFocusInWindow();
     }
 
