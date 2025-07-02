@@ -1,4 +1,4 @@
-package controls_demo;
+package mirrormaze.model;
 
 public enum Direction {
     NORTH(0, -1),

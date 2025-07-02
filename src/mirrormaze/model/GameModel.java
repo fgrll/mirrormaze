@@ -1,4 +1,4 @@
-package controls_demo;
+package mirrormaze.model;
 
 public class GameModel {
     private final boolean[][] walls;
