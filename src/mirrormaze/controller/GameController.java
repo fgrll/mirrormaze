@@ -3,11 +3,11 @@ package mirrormaze.controller;
 import java.awt.*;
 import javax.swing.*;
 
-import MazeGenerator.DFSMazeGenerator;
-import MazeGenerator.MazeGenerator;
-import controls_demo.GameModel;
-import controls_demo.GridPanel;
-import controls_demo.SoundPlayer;
+import mirrormaze.generator.DFSMazeGenerator;
+import mirrormaze.generator.MazeGenerator;
+import mirrormaze.model.GameModel;
+import mirrormaze.util.SoundPlayer;
+import mirrormaze.view.GridPanel;
 
 public class GameController {
     private final CardLayout cardLayout;

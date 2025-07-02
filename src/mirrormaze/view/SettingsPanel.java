@@ -1,7 +1,10 @@
 package mirrormaze.view;
 
 import javax.swing.*;
-import controls_demo.SoundPlayer;
+
+import mirrormaze.util.SettingsManager;
+import mirrormaze.util.SoundPlayer;
+
 import java.awt.*;
 
 public class SettingsPanel extends JPanel {

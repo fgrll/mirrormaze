@@ -2,9 +2,9 @@ package mirrormaze.view;
 
 import javax.swing.*;
 
-import controls_demo.SoundPlayer;
-import settings_test.SettingsManager;
-import settings_test.SettingsPanel;
+import mirrormaze.controller.GameController;
+import mirrormaze.util.SettingsManager;
+import mirrormaze.util.SoundPlayer;
 
 import java.awt.*;
 

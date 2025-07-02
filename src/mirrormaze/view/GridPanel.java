@@ -1,6 +1,11 @@
 package mirrormaze.view;
 
 import javax.swing.*;
+
+import mirrormaze.model.Direction;
+import mirrormaze.model.GameModel;
+import mirrormaze.util.SoundPlayer;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
