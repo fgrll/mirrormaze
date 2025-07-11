@@ -9,6 +9,7 @@ import mirrormaze.util.SoundPlayer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
+import java.util.function.Consumer;
 
 public class GridPanel extends JPanel {
     private final GameModel model;
@@ -26,11 +27,14 @@ public class GridPanel extends JPanel {
 
     private final Runnable onGenerate;
 
-    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate) {
+    private Consumer<Direction> onMove;
+
+    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate, Consumer<Direction> onMove) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
         this.onGenerate = onGenerate;
+        this.onMove = onMove;
         setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
         setFocusable(true);
         requestFocusInWindow();
@@ -148,13 +152,9 @@ public class GridPanel extends JPanel {
                 if (nx >= 0 && nx < model.getCols() && ny >= 0 && ny < model.getRows()) {
                     flashWall(nx, ny);
                 }
-            } else {
-                if (model.isFinished()) {
-                    sounds.playSuccess();
-                } else {
-                    sounds.playMove();
-                }
-            }
+            } 
+
+            onMove.accept(lastDir);
             repaint();
         }
     }
