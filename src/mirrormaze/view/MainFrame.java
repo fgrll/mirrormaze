@@ -32,7 +32,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initCards() {
-        MenuPanel menu = new MenuPanel(controller::showSetup, controller::showSettings);
+        MenuPanel menu = new MenuPanel(controller::showSelectionPanel, controller::showSettings);
         cards.add(menu, "MENU");
 
         SettingsPanel settingsPanel = new SettingsPanel(settings, sounds, controller::showMenu);
@@ -41,6 +41,9 @@ public class MainFrame extends JFrame {
 
         SetupPanel setup = new SetupPanel(this::startGame, controller::showMenu);
         cards.add(setup, "SETUP");
+
+        ModeSelectionPanel modes = new ModeSelectionPanel(controller::selectStandardMode);
+        cards.add(modes, "MODE");
         
         cardLayout.show(cards, "MENU");
     }

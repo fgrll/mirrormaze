@@ -9,7 +9,7 @@ import mirrormaze.util.SoundPlayer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class GridPanel extends JPanel {
     private final GameModel model;
@@ -27,9 +27,9 @@ public class GridPanel extends JPanel {
 
     private final Runnable onGenerate;
 
-    private Consumer<Direction> onMove;
+    private BiConsumer<Direction, Boolean> onMove;
 
-    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate, Consumer<Direction> onMove) {
+    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate, BiConsumer<Direction, Boolean> onMove) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
@@ -147,6 +147,7 @@ public class GridPanel extends JPanel {
             int nx = model.getPlayerX() + dir.dx;
             int ny = model.getPlayerY() + dir.dy;
             boolean moved = model.tryMove(dir);
+
             if (!moved) {
                 sounds.playHit();
                 if (nx >= 0 && nx < model.getCols() && ny >= 0 && ny < model.getRows()) {
@@ -154,7 +155,7 @@ public class GridPanel extends JPanel {
                 }
             } 
 
-            onMove.accept(lastDir);
+            onMove.accept(dir, moved);
             repaint();
         }
     }

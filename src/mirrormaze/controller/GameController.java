@@ -39,8 +39,12 @@ public class GameController {
         cardLayout.show(cards, "SETUP");
     }
 
-    public void startGame(int cols, int rows) {
+    public void selectStandardMode() {
         this.mode = new StandardMode(this);
+        showSetup();
+    }
+
+    public void startGame(int cols, int rows) {
         this.currentCols = cols;
         this.currentRows = rows;
         this.generator = new DFSMazeGenerator(); // debug
@@ -57,7 +61,7 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, this::showSetup, this::generateGame, dirMoved -> handleMove(dirMoved));
+        currentGridPanel = new GridPanel(model, sounds, this::showSetup, this::generateGame, this::handleMove);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         SwingUtilities.getWindowAncestor(cards).pack();
@@ -72,16 +76,19 @@ public class GameController {
         cardLayout.show(cards, "SETTINGS");
     }
 
-    private void handleMove(Direction dir) {
-        boolean moved = model.tryMove(dir);
+    public void showSelectionPanel() {
+        cardLayout.show(cards, "MODE");
+    }
 
+    private void handleMove(Direction dir, boolean moved) {
         if (!moved) {
             mode.onHit();
-        } else if (model.isFinished()) {
-            sounds.playSuccess();
-            mode.onFinish();
         } else {
             sounds.playMove();
+            if (model.isFinished()) {
+                sounds.playSuccess();
+                mode.onFinish();
+            }
         }
     }
 }
