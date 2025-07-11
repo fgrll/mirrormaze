@@ -10,7 +10,7 @@ public class SoundPlayer {
     private Clip moveClip;
     private Clip deathClip;
 
-    private String wavPath = "../resources/";
+    private String wavPath = "../../resources/sounds/";
 
     public SoundPlayer() {
         hitClip = loadClip(wavPath + "mirrormaze_hit.wav");
