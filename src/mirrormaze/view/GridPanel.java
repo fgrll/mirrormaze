@@ -8,6 +8,9 @@ import mirrormaze.util.SoundPlayer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.function.BiConsumer;
 
@@ -31,6 +34,10 @@ public class GridPanel extends JPanel {
 
     private boolean showMirrored = false;
 
+    private double scale = 1.0;
+    private double offsetX = 0, offsetY = 0;
+    private Point dragStart;
+
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
             BiConsumer<Direction, Boolean> onMove) {
         this.model = model;
@@ -42,12 +49,49 @@ public class GridPanel extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
         setupKeyBindings();
+
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                dragStart = e.getPoint();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point p = e.getPoint();
+                offsetX += (dragStart.x - p.x) / scale;
+                offsetY += (dragStart.y - p.y) / scale;
+                dragStart = p;
+                repaint();
+            }
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                double factor = Math.pow(1.1, -e.getPreciseWheelRotation());
+
+                double mx = (e.getX() + offsetX) / scale;
+                double my = (e.getY() + offsetY) / scale;
+
+                scale *= factor;
+
+                offsetX = mx * scale - e.getX();
+                offsetY = my * scale - e.getY();
+                repaint();
+            }
+        };
+
+        addMouseListener(mouseHandler);
+        addMouseMotionListener(mouseHandler);
+        addMouseWheelListener(mouseHandler);
     }
 
     @Override
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);
         Graphics2D g = (Graphics2D) g0.create();
+
+        g.translate(-offsetX, -offsetY);
+        g.scale(scale, scale);
 
         int cols = model.getCols();
         int rows = model.getRows();
