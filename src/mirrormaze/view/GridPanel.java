@@ -74,15 +74,14 @@ public class GridPanel extends JPanel {
 
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
+                double mx = e.getX() / scale + offsetX;
+                double my = e.getY() / scale + offsetY;
+
                 double factor = Math.pow(1.1, -e.getPreciseWheelRotation());
-
-                double mx = (e.getX() + offsetX) / scale;
-                double my = (e.getY() + offsetY) / scale;
-
                 scale *= factor;
 
-                offsetX = mx * scale - e.getX();
-                offsetY = my * scale - e.getY();
+                offsetX = mx - e.getX() / scale;
+                offsetY = my - e.getY() / scale;
 
                 repaint();
             }
@@ -246,6 +245,7 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         im.put(KeyStroke.getKeyStroke("G"), "generate");
         im.put(KeyStroke.getKeyStroke("S"), "toggleShow");
+        im.put(KeyStroke.getKeyStroke("V"), "viewReset");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
@@ -255,6 +255,7 @@ public class GridPanel extends JPanel {
         am.put("exit", new ExitAction());
         am.put("generate", new GenerateAction());
         am.put("toggleShow", new ShowMirroredAction());
+        am.put("viewReset", new ViewRestAction());
     }
 
     private class MoveAction extends AbstractAction {
@@ -323,6 +324,13 @@ public class GridPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             showMirrored = !showMirrored;
             repaint();
+        }
+    }
+
+    private class ViewRestAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fitToWindow();
         }
     }
 }
