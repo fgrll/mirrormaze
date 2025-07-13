@@ -6,16 +6,16 @@ public class GameModel {
     private int playerX, playerY;
     private int exitX, exitY;
 
-    public GameModel(int cols, int rows, boolean[][] walls) {
+    public GameModel(boolean[][] walls) {
         this.walls = walls;
-        this.cols = 2*cols+1;
-        this.rows = 2*rows+1;
+        this.cols  = walls.length;
+        this.rows  = walls[0].length;
 
         this.playerX = 0;
         this.playerY = 1;
 
-        this.exitX = 2*cols;
-        this.exitY = 2*rows-1;
+        this.exitX = cols - 1;
+        this.exitY = rows - 2;
     }
 
     public boolean isWall(int x, int y) {

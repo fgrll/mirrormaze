@@ -5,6 +5,7 @@ import javax.swing.*;
 
 import mirrormaze.generator.DFSMazeGenerator;
 import mirrormaze.generator.MazeGenerator;
+import mirrormaze.generator.MirrorMazeGenerator;
 import mirrormaze.mode.GameMode;
 import mirrormaze.mode.StandardMode;
 import mirrormaze.model.Direction;
@@ -19,8 +20,9 @@ public class GameController {
     private SoundPlayer sounds;
     private GridPanel currentGridPanel;
 
-    private int currentCols, currentRows;
+    
     private MazeGenerator generator;
+    private int halfWidth, height;
 
     private GameMode mode;
 
@@ -44,17 +46,20 @@ public class GameController {
         showSetup();
     }
 
-    public void startGame(int cols, int rows) {
-        this.currentCols = cols;
-        this.currentRows = rows;
-        this.generator = new DFSMazeGenerator(); // debug
+    public void startGame(int dim) {
+        this.height = dim;
+        this.halfWidth = dim / 2;
 
+        MazeGenerator baseGenerator = new DFSMazeGenerator();
+        this.generator = new MirrorMazeGenerator(baseGenerator);
+        
         generateGame();
     }
 
     public void generateGame() {
-        boolean[][] walls = generator.generate(currentCols, currentRows);
-        this.model = new GameModel(currentCols, currentRows, walls);
+        boolean[][] walls = generator.generate(halfWidth, height);
+        
+        this.model = new GameModel(walls);
 
         if (currentGridPanel != null) {
             cards.remove(currentGridPanel);

@@ -48,8 +48,8 @@ public class MainFrame extends JFrame {
         cardLayout.show(cards, "MENU");
     }
 
-    private void startGame(int cols, int rows) {
-        controller.startGame(cols, rows);
+    private void startGame(int dim) {
+        controller.startGame(dim);
         pack();
         cardLayout.show(cards, "GAME");
     }
