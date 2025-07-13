@@ -29,6 +29,8 @@ public class GridPanel extends JPanel {
 
     private BiConsumer<Direction, Boolean> onMove;
 
+    private boolean showMirrored = false;
+
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate, BiConsumer<Direction, Boolean> onMove) {
         this.model = model;
         this.sounds = sounds;
@@ -46,9 +48,28 @@ public class GridPanel extends JPanel {
         super.paintComponent(g0);
         Graphics2D g = (Graphics2D) g0.create();
 
-        for (int x = 0; x < model.getCols(); x++) {
-            for (int y = 0; y < model.getRows(); y++) {
+        int cols = model.getCols();
+        int rows = model.getRows();
+        int halfCols = cols/2;
+
+        for (int x = 0; x < cols; x++) {
+            for (int y = 0; y < rows; y++) {
                 int px = x*cellSize, py = y*cellSize;
+
+                if (
+                    !showMirrored && (x > halfCols) && (x < cols - 1) && (y > 0) && (y < rows -1)
+                    ) {
+                    g.setColor(Color.WHITE);
+                    if (x == flashX && y == flashY) {
+                        g.setColor(Color.RED);
+                    }
+                    g.fillRect(px, py, cellSize, cellSize);
+                    
+                    g.setColor(Color.BLACK);
+                    g.drawRect(px, py, cellSize, cellSize);
+                    continue;
+                }
+
                 if (model.isWall(x, y)) {
                     if (x == flashX && y == flashY) {
                         g.setColor(Color.RED);
@@ -56,16 +77,19 @@ public class GridPanel extends JPanel {
                         g.setColor(Color.DARK_GRAY);
                     }
                     g.fillRect(px, py, cellSize, cellSize);
-                } else if ((x == 0 && y == 1) || (x == model.getCols() /2 && y == model.getRows() - 2)) {
+                } else if ((x == 0 && y == 1) || (x == halfCols && y == rows - 2)) {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(px, py, cellSize, cellSize);
-                } else if ((x == model.getCols() - 1) && (y == 1)) {
+                } else if ((x == cols - 1) && (y == 1)) {
                     g.setColor(Color.GREEN);
                     g.fillRect(px, py, cellSize, cellSize);
                 } else {
                     g.setColor(Color.WHITE);
                     g.fillRect(px, py, cellSize, cellSize);
                 }
+
+                g.setColor(Color.BLACK);
+                g.drawRect(px, py, cellSize, cellSize);
             }
         }
 
@@ -123,6 +147,7 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("R"), "reset");
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         im.put(KeyStroke.getKeyStroke("G"), "generate");
+        im.put(KeyStroke.getKeyStroke("S"), "toggleShow");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
@@ -131,6 +156,7 @@ public class GridPanel extends JPanel {
         am.put("reset", new ResetAction());
         am.put("exit", new ExitAction());
         am.put("generate", new GenerateAction());
+        am.put("toggleShow", new ShowMirroredAction());
     }
 
     private class MoveAction extends AbstractAction {
@@ -190,6 +216,14 @@ public class GridPanel extends JPanel {
     public void cleanup() {
         if (flashTimer != null && flashTimer.isRunning()) {
             flashTimer.stop();
+        }
+    }
+
+    private class ShowMirroredAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showMirrored = !showMirrored;
+            repaint();
         }
     }
 }
