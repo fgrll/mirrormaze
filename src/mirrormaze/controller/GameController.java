@@ -68,6 +68,15 @@ public class GameController {
         cardLayout.show(cards, "SETUP_STANDARD");
     }
 
+    public void selectSurvivalMode() {
+        if (currentGridPanel != null) {
+            cards.remove(currentGridPanel);
+            currentGridPanel.cleanup();
+            currentGridPanel = null;
+        }
+        cardLayout.show(cards, "SETUP_SURVIVAL");
+    }
+
     public void startGame(int dim, ModeConfig config) {
         this.height = dim;
         this.halfWidth = dim / 2;

@@ -50,7 +50,10 @@ public class MainFrame extends JFrame {
                 controller::showMenu);
         cards.add(setup, "SETUP_STANDARD");
 
-        ModeSelectionPanel modes = new ModeSelectionPanel(controller::selectStandardMode);
+        SurvivalSetupPanel survivalSetup = new SurvivalSetupPanel((cfg, dim) -> controller.startGame(dim, cfg), controller::showSelectionPanel);
+        cards.add(survivalSetup, "SETUP_SURVIVAL");
+
+        ModeSelectionPanel modes = new ModeSelectionPanel(controller::selectStandardMode, controller::selectSurvivalMode);
         cards.add(modes, "MODE");
 
         cardLayout.show(cards, "MENU");
