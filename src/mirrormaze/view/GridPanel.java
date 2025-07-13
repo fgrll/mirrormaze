@@ -59,7 +59,7 @@ public class GridPanel extends JPanel {
                 } else if (x == 0 && y == 1) {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(px, py, cellSize, cellSize);
-                } else if ((x == model.getCols() - 1) && (y == model.getRows() - 2)) {
+                } else if ((x == model.getCols() - 1) && (y == 1)) {
                     g.setColor(Color.GREEN);
                     g.fillRect(px, py, cellSize, cellSize);
                 } else {
