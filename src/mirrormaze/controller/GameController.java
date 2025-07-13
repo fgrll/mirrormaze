@@ -139,7 +139,10 @@ public class GameController {
                 "R - Reset position",
                 "Esc - Exit to menu",
                 "V - Reset scaling and offset",
-                "M - Show mirrored maze half");
+                "",
+                "Cheats:",
+                "M - Show mirrored maze half",
+                "P - Show path");
 
         JPanel content = new JPanel(new BorderLayout());
         content.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
