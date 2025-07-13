@@ -91,13 +91,7 @@ public class GridPanel extends JPanel {
         addMouseMotionListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
 
-        // SwingUtilities.invokeLater(this::fitToWindow);
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        fitToWindow();
+        SwingUtilities.invokeLater(this::fitToWindow);
     }
 
     private void fitToWindow() {
