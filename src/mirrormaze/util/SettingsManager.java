@@ -1,6 +1,8 @@
 package mirrormaze.util;
 
 import java.nio.file.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.util.Properties;
 
@@ -8,6 +10,7 @@ public class SettingsManager {
     private static final Path PREF_FILE = Paths.get(System.getProperty("user.home"), ".mirror-maze", "settings.json");
 
     private final Properties props = new Properties();
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private static final float DEFAULT_THEME_VOLUME = 0.4f;
     private static final float DEFAULT_SFX_VOLUME = 1.0f;
@@ -65,6 +68,19 @@ public class SettingsManager {
     }
 
     public void setUIScaling(float f) {
+        float old = getUIScale();
+
         props.setProperty("UI_SCALING", String.valueOf(f));
+        save();
+
+        pcs.firePropertyChange("UI_SCALING", old, f);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(l);
     }
 }

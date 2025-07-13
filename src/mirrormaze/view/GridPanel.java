@@ -46,9 +46,11 @@ public class GridPanel extends JPanel {
 
     private float uiScale;
 
+    private Runnable onOpenSettings;
+
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
             BiConsumer<Direction, Boolean> onMove,
-            GameMode mode, float uiScale) {
+            GameMode mode, float uiScale, Runnable onOpenSettings) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
@@ -56,6 +58,7 @@ public class GridPanel extends JPanel {
         this.onMove = onMove;
         this.mode = mode;
         this.uiScale = uiScale;
+        this.onOpenSettings = onOpenSettings;
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -291,6 +294,7 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("G"), "generate");
         im.put(KeyStroke.getKeyStroke("S"), "toggleShow");
         im.put(KeyStroke.getKeyStroke("V"), "viewReset");
+        im.put(KeyStroke.getKeyStroke("E"), "openSettings");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
@@ -301,6 +305,8 @@ public class GridPanel extends JPanel {
         am.put("generate", new GenerateAction());
         am.put("toggleShow", new ShowMirroredAction());
         am.put("viewReset", new ViewRestAction());
+        am.put("openSettings", new OpenSettingsAction());
+
     }
 
     private class MoveAction extends AbstractAction {
@@ -376,6 +382,13 @@ public class GridPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             fitToWindow();
+        }
+    }
+
+    private class OpenSettingsAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onOpenSettings.run();
         }
     }
 }

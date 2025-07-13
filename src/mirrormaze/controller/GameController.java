@@ -13,6 +13,7 @@ import mirrormaze.model.GameModel;
 import mirrormaze.util.SettingsManager;
 import mirrormaze.util.SoundPlayer;
 import mirrormaze.view.GridPanel;
+import mirrormaze.view.SettingsPanel;
 
 public class GameController {
     private GameModel model;
@@ -34,6 +35,28 @@ public class GameController {
         this.cardLayout = cardLayout;
         this.cards = cards;
         this.settings = settings;
+
+        settings.addPropertyChangeListener(evt -> {
+            if (currentGridPanel != null) {
+                float f = (float)evt.getNewValue();
+                currentGridPanel.setUiScale(f);
+            }
+        });
+    }
+
+    private void showSettingsDialogInGame() {
+        Frame owner = (Frame) SwingUtilities.getWindowAncestor(cards);
+        JDialog dlg = new JDialog(
+            owner,
+            "SETTINGS", false
+        );
+
+        SettingsPanel panel = new SettingsPanel(settings, sounds, dlg::dispose);
+
+        dlg.getContentPane().add(panel);
+        dlg.pack();
+        dlg.setLocationRelativeTo(dlg.getOwner());
+        dlg.setVisible(true);
     }
 
     public void selectStandardMode() {
@@ -67,7 +90,7 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode, settings.getUIScale());
+        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode, settings.getUIScale(), this::showSettingsDialogInGame);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         // SwingUtilities.getWindowAncestor(cards).pack();
