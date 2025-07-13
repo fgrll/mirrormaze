@@ -24,20 +24,14 @@ public class SurvivalMode implements GameMode {
         this.step = step;
     }
 
-    private ModeConfig createConfig() {
-        return new SurvivalModeConfig(dimension, lives, step);
-    }
-
     @Override
     public void onHit() {
         lives--;
 
-        if (lives > 0) {
-            controller.generateGame();
-        } else {
+        if (lives == 0) {
             JOptionPane.showMessageDialog(null, "Game Over!\nScore: " + String.valueOf(roundCount - 1), "Ouch!", JOptionPane.INFORMATION_MESSAGE);
+            controller.showMenu();
         }
-        controller.showMenu();
     }
 
     @Override
@@ -48,7 +42,7 @@ public class SurvivalMode implements GameMode {
     @Override
     public List<String> getOverlayText() {
         return List.of(
-            "Solved: " + roundCount,
+            "Round: " + roundCount,
             "Lives: " + lives
         );
     }
@@ -57,6 +51,6 @@ public class SurvivalMode implements GameMode {
     public void onFinish() {
         roundCount++;
         dimension += step;
-        controller.startGame(dimension, createConfig());
+        controller.nextRound(dimension);
     }
 }

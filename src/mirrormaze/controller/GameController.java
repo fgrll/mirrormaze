@@ -116,6 +116,12 @@ public class GameController {
         currentGridPanel.requestFocusInWindow();
     }
 
+    public void nextRound(int newDim) {
+        this.height = newDim;
+        this.halfWidth = newDim / 2;
+        generateGame();
+    }
+
     private void showHelpDialogInGame() {
         Window owner = SwingUtilities.getWindowAncestor(cards);
         JDialog dlg = new JDialog(owner, "Controls", ModalityType.MODELESS);
