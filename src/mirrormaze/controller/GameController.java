@@ -10,6 +10,7 @@ import mirrormaze.mode.GameMode;
 import mirrormaze.mode.ModeConfig;
 import mirrormaze.model.Direction;
 import mirrormaze.model.GameModel;
+import mirrormaze.util.SettingsManager;
 import mirrormaze.util.SoundPlayer;
 import mirrormaze.view.GridPanel;
 
@@ -26,10 +27,13 @@ public class GameController {
 
     private GameMode mode;
 
-    public GameController(CardLayout cardLayout, JPanel cards, SoundPlayer sounds) {
+    private final SettingsManager settings;
+
+    public GameController(CardLayout cardLayout, JPanel cards, SoundPlayer sounds, SettingsManager settings) {
         this.sounds = sounds;
         this.cardLayout = cardLayout;
         this.cards = cards;
+        this.settings = settings;
     }
 
     public void selectStandardMode() {
@@ -63,7 +67,7 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode);
+        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode, settings.getUIScale());
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         // SwingUtilities.getWindowAncestor(cards).pack();

@@ -36,6 +36,16 @@ public class SettingsPanel extends JPanel {
         });
         add(sfxSlider, gbc);
 
+        gbc.gridx = 0; gbc.gridy++;
+        add(new JLabel("UI Scaling"), gbc);
+        gbc.gridx = 1;
+        JSlider uiSlider = new JSlider(1, 10, Math.round(settings.getUIScale()));
+        uiSlider.addChangeListener(e -> {
+            float v = uiSlider.getValue();
+            settings.setUIScaling(v);
+        });
+        add(uiSlider, gbc); 
+
         gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 2;
         JButton back = new JButton("Back");
         back.addActionListener(e -> {

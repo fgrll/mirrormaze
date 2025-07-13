@@ -11,6 +11,7 @@ public class SettingsManager {
 
     private static final float DEFAULT_THEME_VOLUME = 0.4f;
     private static final float DEFAULT_SFX_VOLUME = 1.0f;
+    private static final float DEFAULT_UI_SCALING = 1.5f;
 
     public SettingsManager() {
         load();
@@ -49,11 +50,21 @@ public class SettingsManager {
         );
     }
 
+    public float getUIScale() {
+        return Float.parseFloat(
+            props.getProperty("UI_SCALING", String.valueOf(DEFAULT_UI_SCALING))
+        );
+    }
+
     public void setThemeVolume(float v) {
         props.setProperty("themeVolume", String.valueOf(v));
     }
 
     public void setSFXVolume(float v) {
         props.setProperty("sfxVolume", String.valueOf(v));
+    }
+
+    public void setUIScaling(float f) {
+        props.setProperty("UI_SCALING", String.valueOf(f));
     }
 }

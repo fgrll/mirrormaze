@@ -44,15 +44,18 @@ public class GridPanel extends JPanel {
 
     private final GameMode mode;
 
+    private float uiScale;
+
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
             BiConsumer<Direction, Boolean> onMove,
-            GameMode mode) {
+            GameMode mode, float uiScale) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
         this.onGenerate = onGenerate;
         this.onMove = onMove;
         this.mode = mode;
+        this.uiScale = uiScale;
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -117,6 +120,11 @@ public class GridPanel extends JPanel {
         offsetY = mazeH / 2.0 - (viewH / 2.0) / scale;
 
         repaint();
+    }
+
+    public void setUiScale(float uiScale) {
+        this.uiScale = uiScale;
+        fitToWindow();
     }
 
     @Override
@@ -212,7 +220,7 @@ public class GridPanel extends JPanel {
 
         if (!lines.isEmpty()) {
             Font base = o.getFont();
-            float size = base.getSize2D() * 1.5f;
+            float size = base.getSize2D() * uiScale;
             Font overlayFont = base.deriveFont(Font.BOLD, size);
             o.setFont(overlayFont);
 
@@ -222,7 +230,6 @@ public class GridPanel extends JPanel {
                     .max().orElse(0);
             int lineHeight = fm.getHeight();
 
-            float uiScale = 1.5f;
             int padding = (int) (6 * uiScale);
             int margin = (int) (10 * uiScale);
             int arc = (int) (8 * uiScale);

@@ -23,7 +23,7 @@ public class MainFrame extends JFrame {
         this.settings = settings;
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
-        controller = new GameController(cardLayout, cards, sounds);
+        controller = new GameController(cardLayout, cards, sounds, settings);
 
         initCards();
 
