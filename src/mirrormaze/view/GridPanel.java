@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 public class GridPanel extends JPanel {
     private final GameModel model;
     private final int cellSize = 20;
-    
+
     private final SoundPlayer sounds;
 
     private Direction lastDir = Direction.EAST;
@@ -31,13 +31,14 @@ public class GridPanel extends JPanel {
 
     private boolean showMirrored = false;
 
-    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate, BiConsumer<Direction, Boolean> onMove) {
+    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
+            BiConsumer<Direction, Boolean> onMove) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
         this.onGenerate = onGenerate;
         this.onMove = onMove;
-        setPreferredSize(new Dimension(model.getCols()*cellSize, model.getRows()*cellSize));
+        setPreferredSize(new Dimension(model.getCols() * cellSize, model.getRows() * cellSize));
         setFocusable(true);
         requestFocusInWindow();
         setupKeyBindings();
@@ -50,21 +51,31 @@ public class GridPanel extends JPanel {
 
         int cols = model.getCols();
         int rows = model.getRows();
-        int halfCols = cols/2;
+        int halfCols = cols / 2;
+        int spacing = 5;
 
         for (int x = 0; x < cols; x++) {
             for (int y = 0; y < rows; y++) {
-                int px = x*cellSize, py = y*cellSize;
+                int px = x * cellSize, py = y * cellSize;
 
-                if (
-                    !showMirrored && (x > halfCols) && (x < cols - 1) && (y > 0) && (y < rows -1)
-                    ) {
+                if (!showMirrored && (x > halfCols) && (x < cols - 1) && (y > 0) && (y < rows - 1)) {
+                    Shape oldClip = g.getClip();
+                    g.setClip(px, py, cellSize, cellSize);
+
                     g.setColor(Color.WHITE);
                     if (x == flashX && y == flashY) {
                         g.setColor(Color.RED);
                     }
                     g.fillRect(px, py, cellSize, cellSize);
-                    
+
+                    if (!(x == flashX && y == flashY)) {
+                        g.setColor(Color.BLACK);
+                        for (int d = -cellSize; d < cellSize; d += spacing) {
+                            g.drawLine(px + d, py, px + d + cellSize, py + cellSize);
+                        }
+                    }
+
+                    g.setClip(oldClip);
                     g.setColor(Color.BLACK);
                     g.drawRect(px, py, cellSize, cellSize);
                     continue;
@@ -93,17 +104,25 @@ public class GridPanel extends JPanel {
             }
         }
 
-        int cx = model.getPlayerX()*cellSize;
-        int cy = model.getPlayerY()*cellSize;
+        int cx = model.getPlayerX() * cellSize;
+        int cy = model.getPlayerY() * cellSize;
         Shape arrow = createArrowShape(cellSize);
         AffineTransform at = new AffineTransform();
-        at.translate(cx + cellSize/2, cy + cellSize/2);
+        at.translate(cx + cellSize / 2, cy + cellSize / 2);
         double angle = 0;
         switch (lastDir) {
-            case NORTH: angle = 0; break;
-            case EAST: angle = Math.PI/2; break;
-            case SOUTH: angle = Math.PI; break;
-            case WEST: angle = -Math.PI/2; break;
+            case NORTH:
+                angle = 0;
+                break;
+            case EAST:
+                angle = Math.PI / 2;
+                break;
+            case SOUTH:
+                angle = Math.PI;
+                break;
+            case WEST:
+                angle = -Math.PI / 2;
+                break;
         }
         at.rotate(angle);
         g.setColor(Color.RED);
@@ -112,11 +131,11 @@ public class GridPanel extends JPanel {
     }
 
     private Shape createArrowShape(int size) {
-        int h = size/2;
+        int h = size / 2;
         Polygon p = new Polygon();
-        p.addPoint(0, -h/2);
-        p.addPoint(-h/2, h/2);
-        p.addPoint(h/2, h/2);
+        p.addPoint(0, -h / 2);
+        p.addPoint(-h / 2, h / 2);
+        p.addPoint(h / 2, h / 2);
         return p;
     }
 
@@ -179,7 +198,7 @@ public class GridPanel extends JPanel {
                 if (nx >= 0 && nx < model.getCols() && ny >= 0 && ny < model.getRows()) {
                     flashWall(nx, ny);
                 }
-            } 
+            }
 
             onMove.accept(dir, moved);
             repaint();
@@ -190,6 +209,7 @@ public class GridPanel extends JPanel {
         public ResetAction() {
             model.resetPosition();
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             lastDir = Direction.EAST;
