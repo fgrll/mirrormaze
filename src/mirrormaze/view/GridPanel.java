@@ -8,6 +8,8 @@ import mirrormaze.util.SoundPlayer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -45,7 +47,12 @@ public class GridPanel extends JPanel {
         this.onEscape = onEscape;
         this.onGenerate = onGenerate;
         this.onMove = onMove;
-        setPreferredSize(new Dimension(model.getCols() * cellSize, model.getRows() * cellSize));
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                fitToWindow();
+            }
+        });
         setFocusable(true);
         requestFocusInWindow();
         setupKeyBindings();
@@ -76,6 +83,7 @@ public class GridPanel extends JPanel {
 
                 offsetX = mx * scale - e.getX();
                 offsetY = my * scale - e.getY();
+
                 repaint();
             }
         };
@@ -83,6 +91,33 @@ public class GridPanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
+
+        // SwingUtilities.invokeLater(this::fitToWindow);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        fitToWindow();
+    }
+
+    private void fitToWindow() {
+        int cols = model.getCols();
+        int rows = model.getRows();
+        double mazeW = cols * cellSize;
+        double mazeH = rows * cellSize;
+        double viewW = getWidth();
+        double viewH = getHeight();
+
+        if (viewW <= 0 || viewH <= 0)
+            return;
+
+        scale = Math.min(viewW / mazeW, viewH / mazeH);
+
+        offsetX = mazeW / 2.0 - (viewW / 2.0) / scale;
+        offsetY = mazeH / 2.0 - (viewH / 2.0) / scale;
+
+        repaint();
     }
 
     @Override
@@ -90,8 +125,8 @@ public class GridPanel extends JPanel {
         super.paintComponent(g0);
         Graphics2D g = (Graphics2D) g0.create();
 
-        g.translate(-offsetX, -offsetY);
         g.scale(scale, scale);
+        g.translate(-offsetX, -offsetY);
 
         int cols = model.getCols();
         int rows = model.getRows();

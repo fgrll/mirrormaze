@@ -66,7 +66,8 @@ public class GameController {
         currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
-        SwingUtilities.getWindowAncestor(cards).pack();
+        // SwingUtilities.getWindowAncestor(cards).pack();
+        SwingUtilities.getWindowAncestor(cards);
         currentGridPanel.requestFocusInWindow();
     }
 

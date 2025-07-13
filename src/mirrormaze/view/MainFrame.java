@@ -27,8 +27,13 @@ public class MainFrame extends JFrame {
 
         setContentPane(cards);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
+        // pack();
         setLocationRelativeTo(null);
+
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(false);
+        
+        setVisible(true);
     }
 
     private void initCards() {
@@ -38,15 +43,14 @@ public class MainFrame extends JFrame {
         SettingsPanel settingsPanel = new SettingsPanel(settings, sounds, controller::showMenu);
         cards.add(settingsPanel, "SETTINGS");
 
-
         StandardSetupPanel setup = new StandardSetupPanel(
-            (dim, cfg) -> controller.startGame(dim, cfg),
-            controller::showMenu);
+                (dim, cfg) -> controller.startGame(dim, cfg),
+                controller::showMenu);
         cards.add(setup, "SETUP_STANDARD");
 
         ModeSelectionPanel modes = new ModeSelectionPanel(controller::selectStandardMode);
         cards.add(modes, "MODE");
-        
+
         cardLayout.show(cards, "MENU");
     }
 
@@ -60,7 +64,7 @@ public class MainFrame extends JFrame {
 
         sounds.playThemeLoop();
         SwingUtilities.invokeLater(() -> {
-            new MainFrame(sounds, settings).setVisible(true);
+            new MainFrame(sounds, settings);
         });
     }
 }
