@@ -2,6 +2,7 @@ package mirrormaze.view;
 
 import javax.swing.*;
 
+import mirrormaze.mode.GameMode;
 import mirrormaze.model.Direction;
 import mirrormaze.model.GameModel;
 import mirrormaze.util.SoundPlayer;
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.function.BiConsumer;
+import java.util.List;
 
 public class GridPanel extends JPanel {
     private final GameModel model;
@@ -40,13 +42,17 @@ public class GridPanel extends JPanel {
     private double offsetX = 0, offsetY = 0;
     private Point dragStart;
 
+    private final GameMode mode;
+
     public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
-            BiConsumer<Direction, Boolean> onMove) {
+            BiConsumer<Direction, Boolean> onMove,
+            GameMode mode) {
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
         this.onGenerate = onGenerate;
         this.onMove = onMove;
+        this.mode = mode;
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -200,6 +206,44 @@ public class GridPanel extends JPanel {
         g.setColor(Color.RED);
         g.fill(at.createTransformedShape(arrow));
         g.dispose();
+
+        Graphics2D o = (Graphics2D) g0.create();
+        List<String> lines = mode.getOverlayText();
+
+        if (!lines.isEmpty()) {
+            Font base = o.getFont();
+            float size = base.getSize2D() * 1.5f;
+            Font overlayFont = base.deriveFont(Font.BOLD, size);
+            o.setFont(overlayFont);
+
+            FontMetrics fm = o.getFontMetrics();
+            int widthText = lines.stream()
+                    .mapToInt(fm::stringWidth)
+                    .max().orElse(0);
+            int lineHeight = fm.getHeight();
+
+            float uiScale = 1.5f;
+            int padding = (int) (6 * uiScale);
+            int margin = (int) (10 * uiScale);
+            int arc = (int) (8 * uiScale);
+
+            int boxW = widthText + 2 * padding;
+            int boxH = lines.size() * lineHeight + 2 * padding;
+            int x0 = getWidth() - boxW - margin;
+            int y0 = margin;
+
+            o.setColor(new Color(0, 0, 0, 150));
+            o.fillRoundRect(x0, y0, boxW, boxH, arc, arc);
+
+            o.setColor(Color.WHITE);
+            int tx = x0 + padding;
+            int ty = y0 + padding + fm.getAscent();
+            for (String line : lines) {
+                o.drawString(line, tx, ty);
+                ty += lineHeight;
+            }
+        }
+        o.dispose();
     }
 
     private Shape createArrowShape(int size) {

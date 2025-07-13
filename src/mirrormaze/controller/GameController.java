@@ -63,7 +63,7 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove);
+        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         // SwingUtilities.getWindowAncestor(cards).pack();
