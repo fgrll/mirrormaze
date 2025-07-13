@@ -1,5 +1,7 @@
 package mirrormaze.view;
 
+// Hallos Piara!
+
 import javax.swing.*;
 
 import mirrormaze.controller.GameController;
