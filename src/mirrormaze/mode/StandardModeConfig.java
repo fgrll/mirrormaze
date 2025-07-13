@@ -20,7 +20,7 @@ public class StandardModeConfig implements ModeConfig {
         return new StandardMode(controller, endless);
     }
 
-    public boolean isCheatsAllowed() {
+    public boolean cheatsAllowed() {
         return allowCheats;
     }
 }

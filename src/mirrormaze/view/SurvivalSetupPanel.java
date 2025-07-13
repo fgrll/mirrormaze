@@ -37,6 +37,10 @@ public class SurvivalSetupPanel extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 3;
+        JCheckBox cheatsCB = new JCheckBox("Allow Cheats?");
+        add(cheatsCB, gbc);
+
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
 
         JButton startBtn = new JButton("Start");
@@ -45,7 +49,8 @@ public class SurvivalSetupPanel extends JPanel {
             int dim = (int) dimSpinner.getValue();
             int life = (int) livesSpinner.getValue();
             int step = (int) stepSpinner.getValue();
-            ModeConfig cfg = new SurvivalModeConfig(dim, life, step);
+            boolean allowCheats = cheatsCB.isSelected();
+            ModeConfig cfg = new SurvivalModeConfig(dim, life, step, allowCheats);
             onStart.accept(cfg, dim);
         });
         add(startBtn, gbc);

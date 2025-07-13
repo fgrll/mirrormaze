@@ -58,7 +58,8 @@ public class GridPanel extends JPanel {
             GameMode mode,
             float uiScale,
             Runnable onOpenSettings,
-            Runnable onShowHelp) {
+            Runnable onShowHelp,
+            boolean cheatsEnabled) {
 
         this.model = model;
         this.sounds = sounds;
@@ -79,6 +80,10 @@ public class GridPanel extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
         setupKeyBindings();
+
+        if (cheatsEnabled) {
+            setupCheats();
+        }
 
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
@@ -329,7 +334,6 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("R"), "reset");
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         im.put(KeyStroke.getKeyStroke("G"), "generate");
-        im.put(KeyStroke.getKeyStroke("M"), "toggleShow");
         im.put(KeyStroke.getKeyStroke("V"), "viewReset");
         im.put(KeyStroke.getKeyStroke("S"), "openSettings");
         im.put(KeyStroke.getKeyStroke("H"), "openHelp");
@@ -341,10 +345,16 @@ public class GridPanel extends JPanel {
         am.put("reset", new ResetAction());
         am.put("exit", new ExitAction());
         am.put("generate", new GenerateAction());
-        am.put("toggleShow", new ShowMirroredAction());
         am.put("viewReset", new ViewRestAction());
         am.put("openSettings", new OpenSettingsAction());
         am.put("openHelp", new OpenHelpAction());
+    }
+
+    private void setupCheats() {
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getActionMap();
+        im.put(KeyStroke.getKeyStroke("M"), "toggleShow");
+        am.put("toggleShow", new ShowMirroredAction());
 
     }
 

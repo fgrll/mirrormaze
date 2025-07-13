@@ -30,12 +30,18 @@ public class StandardSetupPanel extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
+        JCheckBox cheatsCB = new JCheckBox("Allow Cheats?");
+        add(cheatsCB, gbc);
+
+
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
         JButton startBtn = new JButton("Start");
         startBtn.addActionListener(e -> {
             int dim = (int) dimensionSpinner.getValue();
             boolean endless = endlessCB.isSelected();
-            onStart.accept(dim, new StandardModeConfig(endless));
+            boolean allowCheats = cheatsCB.isSelected();
+            onStart.accept(dim, new StandardModeConfig(endless, allowCheats));
         });
         add(startBtn, gbc);
 

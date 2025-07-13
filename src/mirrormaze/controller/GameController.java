@@ -31,6 +31,8 @@ public class GameController {
 
     private final SettingsManager settings;
 
+    private boolean allowCheats;
+
     public GameController(CardLayout cardLayout, JPanel cards, SoundPlayer sounds, SettingsManager settings) {
         this.sounds = sounds;
         this.cardLayout = cardLayout;
@@ -85,6 +87,7 @@ public class GameController {
         this.generator = new MirrorMazeGenerator(baseGenerator);
 
         this.mode = config.createMode(this);
+        this.allowCheats = config.cheatsAllowed();
 
         generateGame();
     }
@@ -108,7 +111,8 @@ public class GameController {
                 mode,
                 settings.getUIScale(),
                 this::showSettingsDialogInGame,
-                this::showHelpDialogInGame);
+                this::showHelpDialogInGame,
+                allowCheats);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         // SwingUtilities.getWindowAncestor(cards).pack();
