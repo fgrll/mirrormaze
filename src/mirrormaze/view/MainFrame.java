@@ -39,8 +39,10 @@ public class MainFrame extends JFrame {
         cards.add(settingsPanel, "SETTINGS");
 
 
-        SetupPanel setup = new SetupPanel(this::startGame, controller::showMenu);
-        cards.add(setup, "SETUP");
+        StandardSetupPanel setup = new StandardSetupPanel(
+            (dim, cfg) -> controller.startGame(dim, cfg),
+            controller::showMenu);
+        cards.add(setup, "SETUP_STANDARD");
 
         ModeSelectionPanel modes = new ModeSelectionPanel(controller::selectStandardMode);
         cards.add(modes, "MODE");
@@ -48,11 +50,6 @@ public class MainFrame extends JFrame {
         cardLayout.show(cards, "MENU");
     }
 
-    private void startGame(int dim) {
-        controller.startGame(dim);
-        pack();
-        cardLayout.show(cards, "GAME");
-    }
     public static void main(String[] args) {
         SettingsManager settings = new SettingsManager();
 

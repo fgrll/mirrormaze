@@ -1,13 +1,16 @@
 package mirrormaze.view;
 
 import javax.swing.*;
+
+import mirrormaze.mode.StandardModeConfig;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.function.IntConsumer;
+import java.util.function.BiConsumer;
 
-public class SetupPanel extends JPanel {
+public class StandardSetupPanel extends JPanel {
     private final Runnable onBack;
-    public SetupPanel(IntConsumer onStart, Runnable onBack) {
+    public StandardSetupPanel(BiConsumer<Integer, StandardModeConfig> onStart, Runnable onBack) {
         this.onBack = onBack;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -22,12 +25,17 @@ public class SetupPanel extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
+        JCheckBox endlessCB = new JCheckBox("Endless Mode");
+        add(endlessCB, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         gbc.gridwidth = 2;
         JButton startBtn = new JButton("Start");
         startBtn.addActionListener(e -> {
             int dim = (int) dimensionSpinner.getValue();
-            // onStart.accept(w*2+1, h*2+1);
-            onStart.accept(dim);
+            boolean endless = endlessCB.isSelected();
+            onStart.accept(dim, new StandardModeConfig(endless));
         });
         add(startBtn, gbc);
 

@@ -7,7 +7,7 @@ import mirrormaze.generator.DFSMazeGenerator;
 import mirrormaze.generator.MazeGenerator;
 import mirrormaze.generator.MirrorMazeGenerator;
 import mirrormaze.mode.GameMode;
-import mirrormaze.mode.StandardMode;
+import mirrormaze.mode.ModeConfig;
 import mirrormaze.model.Direction;
 import mirrormaze.model.GameModel;
 import mirrormaze.util.SoundPlayer;
@@ -32,26 +32,23 @@ public class GameController {
         this.cards = cards;
     }
 
-    public void showSetup() {
+    public void selectStandardMode() {
         if (currentGridPanel != null) {
             cards.remove(currentGridPanel);
             currentGridPanel.cleanup();
             currentGridPanel = null;
         }
-        cardLayout.show(cards, "SETUP");
+        cardLayout.show(cards, "SETUP_STANDARD");
     }
 
-    public void selectStandardMode() {
-        this.mode = new StandardMode(this);
-        showSetup();
-    }
-
-    public void startGame(int dim) {
+    public void startGame(int dim, ModeConfig config) {
         this.height = dim;
         this.halfWidth = dim  / 2;
 
         MazeGenerator baseGenerator = new DFSMazeGenerator();
         this.generator = new MirrorMazeGenerator(baseGenerator);
+
+        this.mode = config.createMode(this);
         
         generateGame();
     }
@@ -66,7 +63,7 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, this::showSetup, this::generateGame, this::handleMove);
+        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         SwingUtilities.getWindowAncestor(cards).pack();

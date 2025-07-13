@@ -5,32 +5,39 @@ import mirrormaze.controller.GameController;
 
 public class StandardMode implements GameMode {
     private final GameController controller;
+    private boolean endless;
 
-    public StandardMode(GameController controller) {
+    public StandardMode(GameController controller, boolean endless) {
         this.controller = controller;
+        this.endless = endless;
     }
 
     @Override
-    public void onHit() {}
+    public void onHit() {
+    }
 
     @Override
     public void onFinish() {
-        SwingUtilities.invokeLater(() -> {
-            int choice = JOptionPane.showOptionDialog(
-                null,
-                "Success!",
-                "Level Completed",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                null, new String[]{"Again", "Exit"},
-                "Again");
+        if (endless) {
+            controller.generateGame();
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                int choice = JOptionPane.showOptionDialog(
+                        null,
+                        "Success!",
+                        "Level Completed",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null, new String[] { "Again", "Exit" },
+                        "Again");
 
                 if (choice == JOptionPane.YES_OPTION) {
                     controller.generateGame();
                 } else {
                     onExit();
                 }
-        });
+            });
+        }
     }
 
     @Override
