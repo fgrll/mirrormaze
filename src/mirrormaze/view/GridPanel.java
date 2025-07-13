@@ -47,10 +47,19 @@ public class GridPanel extends JPanel {
     private float uiScale;
 
     private Runnable onOpenSettings;
+    private Runnable onShowHelp;
 
-    public GridPanel(GameModel model, SoundPlayer sounds, Runnable onEscape, Runnable onGenerate,
+    public GridPanel(
+            GameModel model,
+            SoundPlayer sounds,
+            Runnable onEscape,
+            Runnable onGenerate,
             BiConsumer<Direction, Boolean> onMove,
-            GameMode mode, float uiScale, Runnable onOpenSettings) {
+            GameMode mode,
+            float uiScale,
+            Runnable onOpenSettings,
+            Runnable onShowHelp) {
+
         this.model = model;
         this.sounds = sounds;
         this.onEscape = onEscape;
@@ -59,6 +68,8 @@ public class GridPanel extends JPanel {
         this.mode = mode;
         this.uiScale = uiScale;
         this.onOpenSettings = onOpenSettings;
+        this.onShowHelp = onShowHelp;
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -254,6 +265,32 @@ public class GridPanel extends JPanel {
             }
         }
         o.dispose();
+
+        Graphics2D o1 = (Graphics2D) g0.create();
+        String hint = "Press H to show help";
+        Font base1 = o1.getFont();
+        float size1 = base1.getSize2D() * uiScale;
+        Font overlayFont1 = base1.deriveFont(Font.BOLD, size1);
+        o1.setFont(overlayFont1);
+
+        int padding = (int) (6 * uiScale);
+        int margin = (int) (10 * uiScale);
+        int arc = (int) (8 * uiScale);
+
+        FontMetrics fm1 = o1.getFontMetrics();
+
+        int widthText1 = fm1.stringWidth(hint);
+        int lineHeight1 = fm1.getHeight();
+
+        int x1 = margin;
+        int y1 = getHeight() - margin - lineHeight1;
+
+        o1.setColor(new Color(0, 0, 0, 120));
+        o1.fillRoundRect(x1 - padding, y1 - padding, widthText1 + 2*padding, lineHeight1 + 2*padding, arc, arc);
+
+        o1.setColor(Color.WHITE);
+        o1.drawString(hint, x1, y1 + fm1.getAscent());
+        o1.dispose();
     }
 
     private Shape createArrowShape(int size) {
@@ -292,9 +329,10 @@ public class GridPanel extends JPanel {
         im.put(KeyStroke.getKeyStroke("R"), "reset");
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         im.put(KeyStroke.getKeyStroke("G"), "generate");
-        im.put(KeyStroke.getKeyStroke("S"), "toggleShow");
+        im.put(KeyStroke.getKeyStroke("M"), "toggleShow");
         im.put(KeyStroke.getKeyStroke("V"), "viewReset");
-        im.put(KeyStroke.getKeyStroke("E"), "openSettings");
+        im.put(KeyStroke.getKeyStroke("S"), "openSettings");
+        im.put(KeyStroke.getKeyStroke("H"), "openHelp");
 
         am.put("up", new MoveAction(Direction.NORTH));
         am.put("down", new MoveAction(Direction.SOUTH));
@@ -306,6 +344,7 @@ public class GridPanel extends JPanel {
         am.put("toggleShow", new ShowMirroredAction());
         am.put("viewReset", new ViewRestAction());
         am.put("openSettings", new OpenSettingsAction());
+        am.put("openHelp", new OpenHelpAction());
 
     }
 
@@ -389,6 +428,13 @@ public class GridPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             onOpenSettings.run();
+        }
+    }
+
+    private class OpenHelpAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onShowHelp.run();
         }
     }
 }

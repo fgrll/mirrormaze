@@ -1,6 +1,8 @@
 package mirrormaze.controller;
 
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
+
 import javax.swing.*;
 
 import mirrormaze.generator.DFSMazeGenerator;
@@ -22,7 +24,6 @@ public class GameController {
     private SoundPlayer sounds;
     private GridPanel currentGridPanel;
 
-    
     private MazeGenerator generator;
     private int halfWidth, height;
 
@@ -38,7 +39,7 @@ public class GameController {
 
         settings.addPropertyChangeListener(evt -> {
             if (currentGridPanel != null) {
-                float f = (float)evt.getNewValue();
+                float f = (float) evt.getNewValue();
                 currentGridPanel.setUiScale(f);
             }
         });
@@ -47,9 +48,8 @@ public class GameController {
     private void showSettingsDialogInGame() {
         Frame owner = (Frame) SwingUtilities.getWindowAncestor(cards);
         JDialog dlg = new JDialog(
-            owner,
-            "SETTINGS", false
-        );
+                owner,
+                "SETTINGS", false);
 
         SettingsPanel panel = new SettingsPanel(settings, sounds, dlg::dispose);
 
@@ -70,19 +70,19 @@ public class GameController {
 
     public void startGame(int dim, ModeConfig config) {
         this.height = dim;
-        this.halfWidth = dim  / 2;
+        this.halfWidth = dim / 2;
 
         MazeGenerator baseGenerator = new DFSMazeGenerator();
         this.generator = new MirrorMazeGenerator(baseGenerator);
 
         this.mode = config.createMode(this);
-        
+
         generateGame();
     }
 
     public void generateGame() {
         boolean[][] walls = generator.generate(halfWidth, height);
-        
+
         this.model = new GameModel(walls);
 
         if (currentGridPanel != null) {
@@ -90,12 +90,58 @@ public class GameController {
             currentGridPanel.cleanup();
         }
 
-        currentGridPanel = new GridPanel(model, sounds, mode::onExit, this::generateGame, this::handleMove, mode, settings.getUIScale(), this::showSettingsDialogInGame);
+        currentGridPanel = new GridPanel(
+                model,
+                sounds,
+                mode::onExit,
+                this::generateGame,
+                this::handleMove,
+                mode,
+                settings.getUIScale(),
+                this::showSettingsDialogInGame,
+                this::showHelpDialogInGame);
         cards.add(currentGridPanel, "GAME");
         cardLayout.show(cards, "GAME");
         // SwingUtilities.getWindowAncestor(cards).pack();
         SwingUtilities.getWindowAncestor(cards);
         currentGridPanel.requestFocusInWindow();
+    }
+
+    private void showHelpDialogInGame() {
+        Window owner = SwingUtilities.getWindowAncestor(cards);
+        JDialog dlg = new JDialog(owner, "Controls", ModalityType.MODELESS);
+
+        java.util.List<String> controls = java.util.List.of(
+                "You can move with arrow keys. Scroll to scale and drag the maze to control view offset.",
+                "",
+                "S - Open settings",
+                "G - Generate new maze",
+                "Arrow Keys - Move",
+                "R - Reset position",
+                "Esc - Exit to menu",
+                "V - Reset scaling and offset",
+                "M - Show mirrored maze half");
+
+        JPanel content = new JPanel(new BorderLayout());
+        content.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        content.setBackground(new Color(30, 30, 30));
+
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        area.setOpaque(false);
+        area.setForeground(Color.WHITE);
+        area.setFont(area.getFont().deriveFont(Font.PLAIN, 14f));
+        controls.forEach(line -> {
+            area.append(line);
+            area.append("\n");
+        });
+
+        content.add(area, BorderLayout.CENTER);
+        dlg.getContentPane().add(content);
+
+        dlg.pack();
+        dlg.setLocationRelativeTo(owner);
+        dlg.setVisible(true);
     }
 
     public void showMenu() {
