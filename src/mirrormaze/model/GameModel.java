@@ -2,28 +2,25 @@ package mirrormaze.model;
 
 public class GameModel {
     private final boolean[][] walls;
-    private final int cols, rows;
     private int playerX, playerY;
     private int exitX, exitY;
 
     public GameModel(boolean[][] walls) {
         this.walls = walls;
-        this.cols  = walls.length;
-        this.rows  = walls[0].length;
 
         this.playerX = 0;
         this.playerY = 1;
 
-        this.exitX = cols - 1;
-        this.exitY = rows - 2;
+        this.exitX = walls.length - 1;
+        this.exitY = 1;
     }
 
     public boolean isWall(int x, int y) {
         return walls[x][y];
     }
 
-    public int getCols() { return cols; }
-    public int getRows() { return rows; }
+    public int getCols() { return walls.length; }
+    public int getRows() { return walls[0].length; }
 
     public int getPlayerX() { return playerX; }
     public int getPlayerY() { return playerY; }
@@ -32,7 +29,7 @@ public class GameModel {
         int nx = playerX + dir.dx;
         int ny = playerY + dir.dy;
 
-        if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) {
+        if (nx < 0 || nx >= walls.length || ny < 0 || ny >= walls[0].length) {
             return false;
         }
 

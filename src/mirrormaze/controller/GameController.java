@@ -48,7 +48,7 @@ public class GameController {
 
     public void startGame(int dim) {
         this.height = dim;
-        this.halfWidth = dim / 2;
+        this.halfWidth = dim  / 2;
 
         MazeGenerator baseGenerator = new DFSMazeGenerator();
         this.generator = new MirrorMazeGenerator(baseGenerator);
