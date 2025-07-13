@@ -25,6 +25,11 @@ public class GameModel {
     public int getPlayerX() { return playerX; }
     public int getPlayerY() { return playerY; }
 
+    public int getExitX() { return exitX; }
+    public int getExitY() { return exitY; }
+
+    public boolean[][] getWalls() { return walls; }
+
     public boolean tryMove(Direction dir) {
         int nx = playerX + dir.dx;
         int ny = playerY + dir.dy;

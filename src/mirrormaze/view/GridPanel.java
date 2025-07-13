@@ -5,6 +5,7 @@ import javax.swing.*;
 import mirrormaze.mode.GameMode;
 import mirrormaze.model.Direction;
 import mirrormaze.model.GameModel;
+import mirrormaze.pathfinder.PathFinder;
 import mirrormaze.util.SoundPlayer;
 
 import java.awt.*;
@@ -48,6 +49,9 @@ public class GridPanel extends JPanel {
 
     private Runnable onOpenSettings;
     private Runnable onShowHelp;
+
+    private boolean showPath = false;
+    private List<Point> pathPoints = null;
 
     public GridPanel(
             GameModel model,
@@ -209,6 +213,23 @@ public class GridPanel extends JPanel {
             }
         }
 
+        if (showPath && pathPoints != null) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setStroke(new BasicStroke((float) (2.0 / scale)));
+            g2.setColor(new Color(0, 0, 255, 255)); 
+
+            for (int i = 0; i < pathPoints.size() - 1; i++) {
+                Point p1 = pathPoints.get(i);
+                Point p2 = pathPoints.get(i + 1);
+                int x1 = p1.x * cellSize + cellSize / 2;
+                int y1 = p1.y * cellSize + cellSize / 2;
+                int x2 = p2.x * cellSize + cellSize / 2;
+                int y2 = p2.y * cellSize + cellSize / 2;
+                g2.drawLine(x1, y1, x2, y2);
+            }
+            g2.dispose();
+        }
+
         int cx = model.getPlayerX() * cellSize;
         int cy = model.getPlayerY() * cellSize;
         Shape arrow = createArrowShape(cellSize);
@@ -291,7 +312,7 @@ public class GridPanel extends JPanel {
         int y1 = getHeight() - margin - lineHeight1;
 
         o1.setColor(new Color(0, 0, 0, 120));
-        o1.fillRoundRect(x1 - padding, y1 - padding, widthText1 + 2*padding, lineHeight1 + 2*padding, arc, arc);
+        o1.fillRoundRect(x1 - padding, y1 - padding, widthText1 + 2 * padding, lineHeight1 + 2 * padding, arc, arc);
 
         o1.setColor(Color.WHITE);
         o1.drawString(hint, x1, y1 + fm1.getAscent());
@@ -354,7 +375,11 @@ public class GridPanel extends JPanel {
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
         im.put(KeyStroke.getKeyStroke("M"), "toggleShow");
+        im.put(KeyStroke.getKeyStroke("P"), "togglePath");
+
         am.put("toggleShow", new ShowMirroredAction());
+        am.put("togglePath", new ShowPathAction());
+
 
     }
 
@@ -445,6 +470,22 @@ public class GridPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             onShowHelp.run();
+        }
+    }
+
+    private class ShowPathAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showPath = !showPath;
+
+            if (showPath) {
+                PathFinder.Result res = PathFinder.bfs(model.getWalls(), model.getPlayerX(), model.getPlayerY(),
+                        model.getExitX(), model.getExitY());
+                pathPoints = (res != null) ? res.path : null;
+            } else {
+                pathPoints = null;
+            }
+            repaint();
         }
     }
 }
