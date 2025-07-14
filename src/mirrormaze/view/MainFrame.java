@@ -1,7 +1,5 @@
 package mirrormaze.view;
 
-// Hallos Piara!
-
 import javax.swing.*;
 
 import mirrormaze.controller.GameController;
@@ -10,6 +8,9 @@ import mirrormaze.util.SoundPlayer;
 
 import java.awt.*;
 
+/**
+ * MainFrame manages all GUI panels using a CardLayout
+ */
 public class MainFrame extends JFrame {
     private final JPanel cards;
     private final CardLayout cardLayout;
@@ -17,6 +18,12 @@ public class MainFrame extends JFrame {
     private final SettingsManager settings;
     private final SoundPlayer sounds;
 
+    /**
+     * Creates main window and initializes all cards and GameController
+     * 
+     * @param sounds central SoundManager instance
+     * @param settings central SettingsManager instance
+     */
     public MainFrame(SoundPlayer sounds, SettingsManager settings) {
         super("Mirror Maze");
         this.sounds = sounds;
@@ -38,6 +45,10 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+
+    /**
+     * Initializes panels and adds them to cards.
+     */
     private void initCards() {
         MenuPanel menu = new MenuPanel(controller::showSelectionPanel, controller::showSettings);
         cards.add(menu, "MENU");
@@ -59,6 +70,11 @@ public class MainFrame extends JFrame {
         cardLayout.show(cards, "MENU");
     }
 
+    /**
+     * Entrypoint. Instantiates SettingsManager and SoundPlayer, passes them to the MainFrame() constructor and sets the volume.
+     * 
+     * @param args none
+     */
     public static void main(String[] args) {
         SettingsManager settings = new SettingsManager();
 
