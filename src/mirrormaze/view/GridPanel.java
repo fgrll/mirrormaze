@@ -19,40 +19,48 @@ import java.awt.geom.AffineTransform;
 import java.util.function.BiConsumer;
 import java.util.List;
 
+/**
+ * GP renders the maze and controls all in-game interactions
+ * 
+ * @see javax.swing.JPanel
+ */
 public class GridPanel extends JPanel {
+    
     private final GameModel model;
     private final int cellSize = 20;
-
     private final SoundPlayer sounds;
-
     private Direction lastDir = Direction.EAST;
-
     private int flashX = -1, flashY = -1;
     private final int flashDuration = 200;
     private Timer flashTimer;
-
     private final Runnable onEscape;
-
     private final Runnable onGenerate;
-
     private BiConsumer<Direction, Boolean> onMove;
-
     private boolean showMirrored = false;
-
     private double scale = 1.0;
     private double offsetX = 0, offsetY = 0;
     private Point dragStart;
-
     private final GameMode mode;
-
     private float uiScale;
-
     private Runnable onOpenSettings;
     private Runnable onShowHelp;
-
     private boolean showPath = false;
     private List<Point> pathPoints = null;
 
+    /**
+     * Constructor of GridPanel class
+     * 
+     * @param model GameModel holds maze data and player status
+     * @param sounds Central SoundPlayer instance
+     * @param onEscape Runnable which is triggered by ESC
+     * @param onGenerate Runnable to generate a new maze (G key)
+     * @param onMove Callback that informs the controller about movements
+     * @param mode Current game mode instance
+     * @param uiScale GUI Scaling factor (in-game)
+     * @param onOpenSettings Runnable triggered by S key to opens settings
+     * @param onShowHelp Runnable triggered by H key to show help dialog
+     * @param cheatsEnabled Bool that decides whether M key and P key are mapped
+     */
     public GridPanel(
             GameModel model,
             SoundPlayer sounds,
@@ -126,6 +134,9 @@ public class GridPanel extends JPanel {
         SwingUtilities.invokeLater(this::fitToWindow);
     }
 
+    /**
+     * Calculates visual scaling and offset for GUI zoom/panning
+     */
     private void fitToWindow() {
         int cols = model.getCols();
         int rows = model.getRows();
@@ -145,13 +156,26 @@ public class GridPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * Setter for UI scaling value
+     * 
+     * @param uiScale
+     */
     public void setUiScale(float uiScale) {
         this.uiScale = uiScale;
         fitToWindow();
     }
 
+    /**
+     * Draws maze, player and overlay
+     */
     @Override
     protected void paintComponent(Graphics g0) {
+
+        //=========================
+        // Maze
+        //=========================
+
         super.paintComponent(g0);
         Graphics2D g = (Graphics2D) g0.create();
 
@@ -213,6 +237,10 @@ public class GridPanel extends JPanel {
             }
         }
 
+        //=========================
+        // Pathfinding cheat
+        //=========================
+
         if (showPath && pathPoints != null) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setStroke(new BasicStroke((float) (2.0 / scale)));
@@ -229,6 +257,10 @@ public class GridPanel extends JPanel {
             }
             g2.dispose();
         }
+
+        //=========================
+        // Player
+        //=========================
 
         int cx = model.getPlayerX() * cellSize;
         int cy = model.getPlayerY() * cellSize;
@@ -254,6 +286,10 @@ public class GridPanel extends JPanel {
         g.setColor(Color.RED);
         g.fill(at.createTransformedShape(arrow));
         g.dispose();
+
+        //=========================
+        // Status GUI (top right)
+        //=========================
 
         Graphics2D o = (Graphics2D) g0.create();
         List<String> lines = mode.getOverlayText();
@@ -292,6 +328,10 @@ public class GridPanel extends JPanel {
         }
         o.dispose();
 
+        //=========================
+        // Hint (bottom left)
+        //=========================
+
         Graphics2D o1 = (Graphics2D) g0.create();
         String hint = "Press H to show help";
         Font base1 = o1.getFont();
@@ -319,6 +359,12 @@ public class GridPanel extends JPanel {
         o1.dispose();
     }
 
+    /**
+     * Helper function for creating the arrowhead (player model)
+     * 
+     * @param size Edge length for bounding box
+     * @return Shape arrowhead
+     */
     private Shape createArrowShape(int size) {
         int h = size / 2;
         Polygon p = new Polygon();
@@ -328,6 +374,12 @@ public class GridPanel extends JPanel {
         return p;
     }
 
+    /**
+     * Makes a wall at coordinates (x,y) briefly light up upon collision
+     * 
+     * @param x x coordinate of wall
+     * @param y y coordinate of wall
+     */
     private void flashWall(int x, int y) {
         flashX = x;
         flashY = y;
@@ -344,6 +396,9 @@ public class GridPanel extends JPanel {
         }
     }
 
+    /**
+     * Defines control and registers all key bindings
+     */
     private void setupKeyBindings() {
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
@@ -382,6 +437,10 @@ public class GridPanel extends JPanel {
 
 
     }
+
+    //=========================
+    // Actions
+    //=========================
 
     private class MoveAction extends AbstractAction {
         private final Direction dir;

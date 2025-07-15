@@ -3,6 +3,11 @@ package mirrormaze.util;
 import javax.sound.sampled.*;
 import java.net.URL;
 
+/**
+ * SoundPlayer manages all audio clips. Upon creation, all .wav files are loaded from resources and methods for playing them are provided.
+ * 
+ * @see https://stackoverflow.com/questions/11919009/using-javax-sound-sampled-clip-to-play-loop-and-stop-multiple-sounds-in-a-game
+ */
 public class SoundPlayer {
     private Clip hitClip;
     private Clip successClip;
@@ -20,6 +25,12 @@ public class SoundPlayer {
         deathClip = loadClip(wavPath + "mirrormaze_death.wav");
     }
 
+    /**
+     * Loads .wav clip from resources and opens it
+     * 
+     * @param resourcePath Path to .wav-file
+     * @return Clip instance | null
+     */
     private Clip loadClip(String resourcePath) {
         try {
             URL url = getClass().getResource(resourcePath);
